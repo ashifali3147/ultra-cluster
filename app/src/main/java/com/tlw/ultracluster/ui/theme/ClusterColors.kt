@@ -31,7 +31,7 @@ data class ClusterColors(
     val isNight: Boolean,
 )
 
-val DayColor = ClusterColors(
+val DayColors = ClusterColors(
     bg = Color(0xFFFFFFFF),
     panel = Color(0xFFEDF0F3),
     ink = Color(0xFF000000),
@@ -45,7 +45,7 @@ val DayColor = ClusterColors(
     orange = Color(0xFFC2410C),
     onOrange = Color(0xFFFFFFFF),
     onOrangeSub = Color(0xFF9A330A),
-    rockerIdle = Color(0xFFFFFFFF),
+    rockerIdle = Color(0xFF9A330A),
     amberBg = Color(0xFFFFE3A6),
     amberFg = Color(0xFF4A2E00),
     eco = Color(0xFF0B7A43),
@@ -56,4 +56,31 @@ val DayColor = ClusterColors(
     powerHi = Color(0xFFA97BF0),
     onMode = Color(0xFFFFFFFF),
     isNight = false,
+)
+
+val NightColors = ClusterColors(
+    bg = Color(0xFF000000),
+    panel = Color(0xFF15181B),
+    ink = Color(0xFFFFFFFF),
+    sub = Color(0xFFBAC2C9),
+    rule = Color(0xFF2E343A),
+    segOff = Color(0xFF262B30),
+    segNA = Color(0xFF181B1E),
+    naInk = Color(0xFF6E777F),
+    amber = Color(0xFFFFB020),
+    red = Color(0xFFFF4D5E),
+    orange = Color(0xFFFF6A1F),
+    onOrange = Color(0xFF1A0800),
+    onOrangeSub = Color(0xFF3A1404),
+    rockerIdle = Color(0xFFD9530F),
+    amberBg = Color(0xFF3A2A00),
+    amberFg = Color(0xFFFFD27A),
+    eco = Color(0xFF2FBF71),
+    ecoHi = Color(0xFF8FE3B5),
+    ride = Color(0xFF4D7CFF),
+    rideHi = Color(0xFFA9BEFF),
+    power = Color(0xFFA970FF),
+    powerHi = Color(0xFFD2B5FF),
+    onMode = Color(0xFF000000),
+    isNight = true,
 )
