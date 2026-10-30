@@ -1,34 +1,21 @@
 package com.tlw.ultracluster.ui.theme
 
-import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+
+object ClusterType {
+    val speed = TextStyle(
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 220.sp, lineHeight = 200.sp, letterSpacing = (-4).sp,
+        fontFeatureSettings = "tnum"
     )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
-)
+    val unit = TextStyle(fontWeight = FontWeight.Bold, fontSize = 32.sp)
+    val title = TextStyle(fontWeight = FontWeight.ExtraBold, fontSize = 36.sp)
+    val motor = TextStyle(fontWeight = FontWeight.ExtraBold, fontSize = 52.sp)
+    val kill = TextStyle(fontWeight = FontWeight.ExtraBold, fontSize = 32.sp)
+    val alertTitle = TextStyle(fontWeight = FontWeight.ExtraBold, fontSize = 24.sp)
+    val body = TextStyle(fontWeight = FontWeight.Medium, fontSize = 18.sp)
+    val label = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 19.sp)
+}
