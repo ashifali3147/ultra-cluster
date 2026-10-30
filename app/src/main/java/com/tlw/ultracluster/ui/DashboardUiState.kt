@@ -15,26 +15,30 @@ data class DashboardUiState(
     val sim: SimUi,
 )
 
-enum class SimUi {
-
-}
+enum class SimUi
 
 enum class RideMode {
-
+    ECO, RIDE, POWER
 }
 
-enum class AlertUi {
+enum class Tone { CALM, INFO, STOP, WARN, OVER }
 
-}
+data class AlertUi(
+    val tone: Tone,
+    val title: String,
+    val body: String,
+)
 
 enum class KillSwitchUi {
-
+    ACTIVE, INACTIVE, UNKNOWN
 }
 
 enum class MotorUi {
-
+    ON, OFF, UNKNOWN
 }
 
-enum class SpeedUi {
-
+sealed interface SpeedUi {
+    data class Value(val kmh: Int) : SpeedUi
+    data object Invalid : SpeedUi
+    data object Unavailable : SpeedUi
 }
