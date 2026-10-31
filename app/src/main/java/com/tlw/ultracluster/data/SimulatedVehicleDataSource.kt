@@ -52,9 +52,22 @@ class SimulatedVehicleDataSource(
 
                     val control = s.controls
                     val signal = when (s.fault) {
-                        Fault.INVALID_SPEED -> VehicleSignal(-12f, control.motorOn, control.killActive, s.rideMode, clock())
+                        Fault.INVALID_SPEED -> VehicleSignal(
+                            -12f,
+                            control.motorOn,
+                            control.killActive,
+                            s.rideMode,
+                            clock()
+                        )
+
                         Fault.SILENT -> null
-                        else -> VehicleSignal(speed, control.motorOn, control.killActive, s.rideMode, clock())
+                        else -> VehicleSignal(
+                            speed,
+                            control.motorOn,
+                            control.killActive,
+                            s.rideMode,
+                            clock()
+                        )
                     }
 
                     signal?.let { emit(it) }
@@ -66,31 +79,28 @@ class SimulatedVehicleDataSource(
 
     private fun nextManualSpeed(s: SimStatus): Float = s.manualSpeedKmh
 
-    override fun setMode(mode: SimMode) {
-        TODO("Not yet implemented")
+    override fun setMode(mode: SimMode) = _status.update {
+        if (mode == SimMode.MANUAL) {
+            it.copy(mode = mode, fault = null, controls = ManualControls(), manualSpeedKmh = 0f)
+        } else {
+            it.copy(mode = mode, fault = null, playing = true)
+        }
     }
 
-    override fun play() {
-        TODO("Not yet implemented")
-    }
+    override fun play() = _status.update { it.copy(playing = true, fault = null) }
 
-    override fun pause() {
-        TODO("Not yet implemented")
-    }
+    override fun pause() = _status.update { it.copy(playing = false) }
 
-    override fun jumpTo(scenario: Scenario) {
-        TODO("Not yet implemented")
-    }
+    override fun jumpTo(scenario: Scenario) =
+        _status.update { it.copy(scenario = scenario, playing = false, fault = null) }
 
-    override fun setFault(fault: Fault?) {
-        TODO("Not yet implemented")
-    }
+    override fun setFault(fault: Fault?) =
+        _status.update { it.copy(fault = fault, playing = fault == null && it.playing) }
 
-    override fun setRideMode(mode: RideMode) {
-        TODO("Not yet implemented")
-    }
+    override fun setRideMode(mode: RideMode) = _status.update { it.copy(rideMode = mode) }
 
-    override fun updateControl(change: (ManualControls) -> ManualControls) {
-        TODO("Not yet implemented")
+    override fun updateControl(change: (ManualControls) -> ManualControls) = _status.update {
+        val next = change(it.controls)
+        it.copy(controls = if (next.killActive) next.copy(motorOn = false) else next)
     }
 }
