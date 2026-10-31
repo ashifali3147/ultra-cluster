@@ -1,11 +1,8 @@
 package com.tlw.ultracluster.ui
 
 import androidx.compose.runtime.Immutable
-import com.tlw.ultracluster.data.Fault
-import com.tlw.ultracluster.data.ManualControls
 import com.tlw.ultracluster.data.RideMode
-import com.tlw.ultracluster.data.Scenario
-import com.tlw.ultracluster.data.SimMode
+import com.tlw.ultracluster.data.SimStatus
 
 @Immutable
 data class DashboardUiState(
@@ -20,7 +17,7 @@ data class DashboardUiState(
     val rideMode: RideMode,
     val isStale: Boolean,
     val isNight: Boolean,
-    val sim: SimUi,
+    val sim: SimStatus,
 ) {
     companion object {
         val Initial = DashboardUiState(
@@ -35,18 +32,10 @@ data class DashboardUiState(
             rideMode = RideMode.ECO,
             isStale = false,
             isNight = false,
-            sim = SimUi(),
+            sim = SimStatus(),
         )
     }
 }
-
-data class SimUi(
-    val mode: SimMode = SimMode.AUTO,
-    val playing: Boolean = true,
-    val current: Scenario? = Scenario.PARKED,
-    val fault: Fault? = null,
-    val controls: ManualControls = ManualControls(),
-)
 
 enum class Tone { CALM, INFO, STOP, WARN, OVER }
 

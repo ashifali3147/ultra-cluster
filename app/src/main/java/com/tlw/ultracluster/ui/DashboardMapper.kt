@@ -1,8 +1,8 @@
 package com.tlw.ultracluster.ui
 
+import com.tlw.ultracluster.data.SimStatus
 import com.tlw.ultracluster.data.VehicleSignal
 import kotlin.math.roundToInt
-
 
 
 class DashboardMapper(
@@ -144,7 +144,7 @@ class DashboardMapper(
             rideMode = signal.rideMode,
             isStale = false,
             isNight = false,
-            sim = SimUi()
+            sim = SimStatus()
         )
     }
 
