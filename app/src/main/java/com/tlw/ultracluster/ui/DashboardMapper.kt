@@ -148,6 +148,22 @@ class DashboardMapper(
         )
     }
 
+    fun stale(last: VehicleSignal): DashboardUiState = DashboardUiState.Initial.copy(
+        title = "Speed sensor not responding",
+        hint = "This is the vehicle feed, not your phone. Old numbers are hidden on purpose.",
+        speed = SpeedUi.Unavailable,
+        motorSubtitle = "No reading",
+        alerts = listOf(AlertUi(Tone.WARN, "No vehicle data", "Nothing received for 3 seconds.")),
+        rideMode = last.rideMode,
+        isStale = true
+    )
+
+    fun unavailable(): DashboardUiState = DashboardUiState.Initial.copy(
+        title = "Vehicle data unavailable",
+        hint = "The data source stopped. Restart the app.",
+        alerts = listOf(AlertUi(Tone.WARN, "Data source error", "No more readings will arrive.")),
+        isStale = true,
+    )
 
     private fun motorWords(motor: MotorUi) =
         if (motor == MotorUi.ON) "Driving the wheel" else "Not powered"
