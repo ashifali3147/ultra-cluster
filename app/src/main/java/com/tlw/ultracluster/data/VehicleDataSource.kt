@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface VehicleDataSource {
     val signal: Flow<VehicleSignal>
 
-    val statue: StateFlow<SimStatus>
+    val status: StateFlow<SimStatus>
 
     fun setMode(mode: SimMode)
     fun play()
