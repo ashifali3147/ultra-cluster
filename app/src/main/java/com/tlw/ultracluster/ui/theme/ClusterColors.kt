@@ -2,6 +2,7 @@ package com.tlw.ultracluster.ui.theme
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import com.tlw.ultracluster.data.RideMode
 
 @Immutable
 data class ClusterColors(
@@ -84,3 +85,6 @@ val NightColors = ClusterColors(
     onMode = Color(0xFF000000),
     isNight = true,
 )
+
+fun ClusterColors.mode(m: RideMode) = when (m) { RideMode.ECO -> eco; RideMode.RIDE -> ride; RideMode.POWER -> power }
+fun ClusterColors.modeHi(m: RideMode) = when (m) { RideMode.ECO -> ecoHi; RideMode.RIDE -> rideHi; RideMode.POWER -> powerHi }
