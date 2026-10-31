@@ -1,11 +1,13 @@
 package com.tlw.ultracluster.ui
 
+import androidx.compose.runtime.Immutable
 import com.tlw.ultracluster.data.Fault
 import com.tlw.ultracluster.data.ManualControls
 import com.tlw.ultracluster.data.RideMode
 import com.tlw.ultracluster.data.Scenario
 import com.tlw.ultracluster.data.SimMode
 
+@Immutable
 data class DashboardUiState(
     val title: String,
     val hint: String,
