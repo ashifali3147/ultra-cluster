@@ -1,5 +1,11 @@
 package com.tlw.ultracluster.ui
 
+import com.tlw.ultracluster.data.Fault
+import com.tlw.ultracluster.data.ManualControls
+import com.tlw.ultracluster.data.RideMode
+import com.tlw.ultracluster.data.Scenario
+import com.tlw.ultracluster.data.SimMode
+
 data class DashboardUiState(
     val title: String,
     val hint: String,
@@ -15,11 +21,13 @@ data class DashboardUiState(
     val sim: SimUi,
 )
 
-enum class SimUi
-
-enum class RideMode {
-    ECO, RIDE, POWER
-}
+data class SimUi(
+    val mode: SimMode = SimMode.AUTO,
+    val playing: Boolean = true,
+    val current: Scenario? = Scenario.PARKED,
+    val fault: Fault? = null,
+    val controls: ManualControls = ManualControls(),
+)
 
 enum class Tone { CALM, INFO, STOP, WARN, OVER }
 
