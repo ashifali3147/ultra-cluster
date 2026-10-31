@@ -21,7 +21,24 @@ data class DashboardUiState(
     val isStale: Boolean,
     val isNight: Boolean,
     val sim: SimUi,
-)
+) {
+    companion object {
+        val Initial = DashboardUiState(
+            title = "Starting",
+            hint = "Waiting for the first reading.",
+            speed = SpeedUi.Unavailable,
+            isAccelerating = false,
+            motor = MotorUi.UNKNOWN,
+            motorSubtitle = "No reading",
+            killSwitch = KillSwitchUi.UNKNOWN,
+            alerts = emptyList(),
+            rideMode = RideMode.ECO,
+            isStale = false,
+            isNight = false,
+            sim = SimUi(),
+        )
+    }
+}
 
 data class SimUi(
     val mode: SimMode = SimMode.AUTO,
