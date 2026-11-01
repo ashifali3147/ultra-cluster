@@ -1,5 +1,8 @@
 package com.tlw.ultracluster.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -12,6 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -21,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.tlw.ultracluster.ui.components.AlertColumn
 import com.tlw.ultracluster.ui.components.FooterBar
 import com.tlw.ultracluster.ui.components.HandlebarPanel
+import com.tlw.ultracluster.ui.components.SimControlBar
 import com.tlw.ultracluster.ui.components.SpeedReadout
 import com.tlw.ultracluster.ui.components.SpeedTape
 import com.tlw.ultracluster.ui.components.TopBar
@@ -32,6 +40,8 @@ import kotlin.math.min
 fun RideDashboardScreen(state: DashboardUiState, onEvent: (DashboardEvent) -> Unit) {
     val colors = ClusterTheme.colors
     val killActive = state.killSwitch == KillSwitchUi.ACTIVE
+
+    var showControls by rememberSaveable { mutableStateOf(true) }
 
     BoxWithConstraints(
         Modifier
@@ -98,10 +108,21 @@ fun RideDashboardScreen(state: DashboardUiState, onEvent: (DashboardEvent) -> Un
                     hint = state.hint,
                     isStale = state.isStale,
                     isNight = state.isNight,
-                    controlsOpen = true, //TODO:: Not yet added the Simulation Bar
+                    controlsOpen = showControls,
                     onToggleNight = { onEvent(DashboardEvent.ToggleNight) },
-                    onToggleControls = {}, //TODO
+                    onToggleControls = { showControls = !showControls},
                 )
+
+                AnimatedVisibility(
+                    visible = showControls,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
+                    SimControlBar(
+                        sim = state.sim,
+                        onEvent = onEvent,
+                    )
+                }
 
             }
         }
