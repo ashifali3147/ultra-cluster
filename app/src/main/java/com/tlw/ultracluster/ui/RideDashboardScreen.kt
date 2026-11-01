@@ -30,7 +30,7 @@ import kotlin.math.min
 
 
 @Composable
-fun RideDashboardScreen() {
+fun RideDashboardScreen(state: DashboardUiState, onEvent: (DashboardEvent) -> Unit) {
     val colors = ClusterTheme.colors
     BoxWithConstraints(
         Modifier
@@ -115,6 +115,9 @@ fun RideDashboardScreen() {
 @Composable
 fun PreviewRideDashboardScreen() {
     ClusterTheme(isNight = false) {
-        RideDashboardScreen()
+        RideDashboardScreen(
+            state = DashboardUiState.Initial,
+            onEvent = {},
+        )
     }
 }
