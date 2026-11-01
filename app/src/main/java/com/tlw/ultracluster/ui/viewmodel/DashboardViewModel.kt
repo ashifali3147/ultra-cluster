@@ -2,6 +2,9 @@ package com.tlw.ultracluster.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.tlw.ultracluster.data.SimulatedVehicleDataSource
 import com.tlw.ultracluster.data.VehicleDataSource
 import com.tlw.ultracluster.data.VehicleSignal
 import com.tlw.ultracluster.ui.DashboardEvent
@@ -70,6 +73,12 @@ class DashboardViewModel(
             DashboardEvent.ThrottleUp -> source.updateControl { it.copy(throttle = false) }
             DashboardEvent.ToggleMotor -> source.updateControl { it.copy(motorOn = !it.motorOn) }
             DashboardEvent.ToggleNight -> isNight.update { !it }
+        }
+    }
+
+    companion object {
+        val Factory = viewModelFactory {
+            initializer { DashboardViewModel(SimulatedVehicleDataSource()) }
         }
     }
 }
