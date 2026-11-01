@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import com.tlw.ultracluster.data.RideMode
 import com.tlw.ultracluster.ui.components.AlertColumn
 import com.tlw.ultracluster.ui.components.FooterBar
 import com.tlw.ultracluster.ui.components.HandlebarPanel
@@ -32,6 +31,8 @@ import kotlin.math.min
 @Composable
 fun RideDashboardScreen(state: DashboardUiState, onEvent: (DashboardEvent) -> Unit) {
     val colors = ClusterTheme.colors
+    val killActive = state.killSwitch == KillSwitchUi.ACTIVE
+
     BoxWithConstraints(
         Modifier
             .fillMaxSize()
@@ -48,7 +49,7 @@ fun RideDashboardScreen(state: DashboardUiState, onEvent: (DashboardEvent) -> Un
                     .fillMaxSize()
                     .background(colors.bg)
             ) {
-                TopBar(title = "Motor stopped", mode = RideMode.POWER, killActive = true) //TODO
+                TopBar(title = state.title, mode = state.rideMode, killActive = killActive)
                 Row(
                     modifier = Modifier
                         .weight(1f)
@@ -57,14 +58,14 @@ fun RideDashboardScreen(state: DashboardUiState, onEvent: (DashboardEvent) -> Un
                     horizontalArrangement = Arrangement.spacedBy(24.dp),
                 ) {
                     HandlebarPanel(
-                        MotorUi.OFF,
-                        "Driving the wheel",
-                        KillSwitchUi.INACTIVE,
-                        RideMode.ECO,
-                        Modifier
+                        motor = state.motor,
+                        motorSubtitle = state.motorSubtitle,
+                        killSwitch = state.killSwitch,
+                        mode = state.rideMode,
+                        modifier = Modifier
                             .width(350.dp)
                             .fillMaxHeight()
-                    ) //TODO
+                    )
 
                     Column(
                         modifier = Modifier
@@ -75,36 +76,32 @@ fun RideDashboardScreen(state: DashboardUiState, onEvent: (DashboardEvent) -> Un
                             Alignment.CenterVertically
                         ),
                     ) {
-                        SpeedReadout(speed = SpeedUi.Value(50)) //TODO
+                        SpeedReadout(speed = state.speed)
                         SpeedTape(
-                            SpeedUi.Value(0),
-                            RideMode.ECO,
-                            killActive = false,
-                            accelerating = false
+                            speed = state.speed,
+                            mode = state.rideMode,
+                            killActive = killActive,
+                            accelerating = state.isAccelerating
                         )
                     }
 
                     AlertColumn(
-                        alerts = listOf(
-                            AlertUi(Tone.OVER, "Over 80 km/h", "Ease off the throttle."),
-                            AlertUi(
-                                Tone.INFO,
-                                "Speeding up",
-                                "Speed has gone up since the last reading."
-                            ),
-                        ),
+                        alerts = state.alerts,
                         modifier = Modifier
                             .width(300.dp)
                             .fillMaxHeight(),
-                    ) //TODO
+                    )
 
                 }
 
                 FooterBar(
-                    hint = "All signals normal.",
-                    isStale = false, isNight = false, controlsOpen = true,
-                    onToggleNight = {}, onToggleControls = {},
-                ) //TODO
+                    hint = state.hint,
+                    isStale = state.isStale,
+                    isNight = state.isNight,
+                    controlsOpen = true, //TODO:: Not yet added the Simulation Bar
+                    onToggleNight = { onEvent(DashboardEvent.ToggleNight) },
+                    onToggleControls = {}, //TODO
+                )
 
             }
         }
