@@ -1,5 +1,8 @@
 package com.tlw.ultracluster.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -12,16 +15,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import com.tlw.ultracluster.data.RideMode
 import com.tlw.ultracluster.ui.components.AlertColumn
 import com.tlw.ultracluster.ui.components.FooterBar
 import com.tlw.ultracluster.ui.components.HandlebarPanel
+import com.tlw.ultracluster.ui.components.SimControlBar
 import com.tlw.ultracluster.ui.components.SpeedReadout
 import com.tlw.ultracluster.ui.components.SpeedTape
 import com.tlw.ultracluster.ui.components.TopBar
@@ -30,8 +37,12 @@ import kotlin.math.min
 
 
 @Composable
-fun RideDashboardScreen() {
+fun RideDashboardScreen(state: DashboardUiState, onEvent: (DashboardEvent) -> Unit) {
     val colors = ClusterTheme.colors
+    val killActive = state.killSwitch == KillSwitchUi.ACTIVE
+
+    var showControls by rememberSaveable { mutableStateOf(true) }
+
     BoxWithConstraints(
         Modifier
             .fillMaxSize()
@@ -48,7 +59,7 @@ fun RideDashboardScreen() {
                     .fillMaxSize()
                     .background(colors.bg)
             ) {
-                TopBar(title = "Motor stopped", mode = RideMode.POWER, killActive = true) //TODO
+                TopBar(title = state.title, mode = state.rideMode, killActive = killActive)
                 Row(
                     modifier = Modifier
                         .weight(1f)
@@ -57,14 +68,14 @@ fun RideDashboardScreen() {
                     horizontalArrangement = Arrangement.spacedBy(24.dp),
                 ) {
                     HandlebarPanel(
-                        MotorUi.OFF,
-                        "Driving the wheel",
-                        KillSwitchUi.INACTIVE,
-                        RideMode.ECO,
-                        Modifier
+                        motor = state.motor,
+                        motorSubtitle = state.motorSubtitle,
+                        killSwitch = state.killSwitch,
+                        mode = state.rideMode,
+                        modifier = Modifier
                             .width(350.dp)
                             .fillMaxHeight()
-                    ) //TODO
+                    )
 
                     Column(
                         modifier = Modifier
@@ -75,36 +86,43 @@ fun RideDashboardScreen() {
                             Alignment.CenterVertically
                         ),
                     ) {
-                        SpeedReadout(speed = SpeedUi.Value(50)) //TODO
+                        SpeedReadout(speed = state.speed)
                         SpeedTape(
-                            SpeedUi.Value(0),
-                            RideMode.ECO,
-                            killActive = false,
-                            accelerating = false
+                            speed = state.speed,
+                            mode = state.rideMode,
+                            killActive = killActive,
+                            accelerating = state.isAccelerating
                         )
                     }
 
                     AlertColumn(
-                        alerts = listOf(
-                            AlertUi(Tone.OVER, "Over 80 km/h", "Ease off the throttle."),
-                            AlertUi(
-                                Tone.INFO,
-                                "Speeding up",
-                                "Speed has gone up since the last reading."
-                            ),
-                        ),
+                        alerts = state.alerts,
                         modifier = Modifier
                             .width(300.dp)
                             .fillMaxHeight(),
-                    ) //TODO
+                    )
 
                 }
 
                 FooterBar(
-                    hint = "All signals normal.",
-                    isStale = false, isNight = false, controlsOpen = true,
-                    onToggleNight = {}, onToggleControls = {},
-                ) //TODO
+                    hint = state.hint,
+                    isStale = state.isStale,
+                    isNight = state.isNight,
+                    controlsOpen = showControls,
+                    onToggleNight = { onEvent(DashboardEvent.ToggleNight) },
+                    onToggleControls = { showControls = !showControls},
+                )
+
+                AnimatedVisibility(
+                    visible = showControls,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
+                    SimControlBar(
+                        sim = state.sim,
+                        onEvent = onEvent,
+                    )
+                }
 
             }
         }
@@ -115,6 +133,9 @@ fun RideDashboardScreen() {
 @Composable
 fun PreviewRideDashboardScreen() {
     ClusterTheme(isNight = false) {
-        RideDashboardScreen()
+        RideDashboardScreen(
+            state = DashboardUiState.Initial,
+            onEvent = {},
+        )
     }
 }

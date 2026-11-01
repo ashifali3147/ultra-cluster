@@ -18,8 +18,7 @@ class SimulatedVehicleDataSource(
 
     private val _status = MutableStateFlow(SimStatus())
 
-    override val status: StateFlow<SimStatus>
-        get() = _status.asStateFlow()
+    override val status: StateFlow<SimStatus> = _status.asStateFlow()
 
     override val signal: Flow<VehicleSignal> = flow {
         var ticksOnScenario = 0
@@ -77,7 +76,22 @@ class SimulatedVehicleDataSource(
         }
     }
 
-    private fun nextManualSpeed(s: SimStatus): Float = s.manualSpeedKmh
+    private fun nextManualSpeed(s: SimStatus): Float {
+        val c = s.controls
+        val (topSpeed, gainPerTick) = when (s.rideMode) {
+            RideMode.ECO -> 60f to 2f
+            RideMode.RIDE -> 80f to 3f
+            RideMode.POWER -> 95f to 4.5f
+        }
+        val v = s.manualSpeedKmh
+        val canDrive = c.throttle && c.motorOn && !c.killActive
+
+        return when {
+            canDrive -> minOf(topSpeed, v + gainPerTick)   // speed up, capped by ride mode
+            c.brake -> maxOf(0f, v - 6f)                   // brake hard
+            else -> maxOf(0f, v - 0.5f)                    // coast down slowly
+        }
+    }
 
     override fun setMode(mode: SimMode) = _status.update {
         if (mode == SimMode.MANUAL) {
